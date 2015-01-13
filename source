@@ -1,0 +1,102 @@
+#include <iostream>
+#include<time.h>
+using namespace std;
+
+const float ro = 0.9;
+
+int counter(bool *a){     // считает сколько единичек в векторе
+	int sum = 0;
+	for (int k = 0; k < 6; k++){
+		if (a[k] == 1) sum++;
+	}
+	return sum;
+}
+
+bool* logAND(bool *b, bool *c){  // Оператор И для двух векторов
+	bool *d = new bool[6];
+
+	for (int k = 0; k < 6; k++){
+		d[k] = (b[k] && c[k]);
+	}
+	return d;
+}
+
+bool* rec(bool *b, bool *c){  // присваивает значение второго массива в первый
+	bool *d = new bool[6];
+
+	for (int k = 0; k < 6; k++){
+		b[k] =  c[k];
+	}
+}
+
+int main(){
+	int p1 = 0;
+	bool vectors[10][6];
+	srand(time(NULL));
+	for (int i = 0; i < 10; i++){  // Забиваем двумерный массив рандомными значениями
+		for (int k = 0; k < 6; k++){
+			vectors[i][k] = rand() % 2;
+		}
+	}
+
+	for (int i = 0; i < 10; i++){  // Смотрим что получилось
+
+		for (int k = 0; k < 6; k++){
+			cout << vectors[i][k];
+		}
+		cout << endl;
+	}
+	bool proxContainer[10][6];  // контейнер, который будет содержать прототипы 
+
+	bool proximity[10] = {};  // Создаю массив, обозначающий к какому кластеру относится данный вектор
+
+	proximity[0] = 1;  // так как первый вектор автоматически становится первым кластером
+
+	; 
+	rec(proxContainer[0], vectors[0]); // передаем значение из вектора 1 в контейнер прототипов
+
+	
+	// загружаю первый вектор как прототип первого кластера
+	int nclaster = 1;
+	// дальше идет test of similarity
+	for (int i = 1; i < 10; i++){
+		bool f = false;
+		for (int k = 0; k < nclaster; k++) {
+				if (
+					((counter(logAND(proxContainer[k], vectors[i]))) /
+		
+					1 + counter(proxContainer[k]))>(counter(vectors[i])/1+6)
+					)
+	
+				{
+	 						// test of vigilance
+						if (
+							(((counter(logAND(proxContainer[k], vectors[i]))) / counter(vectors[i])) < ro)
+							)
+						{
+							rec(proxContainer[k], vectors[i]); //включить вектор в прототип вектора класса
+						}
+				}
+				else  rec(proxContainer[k], vectors[i]);
+									}
+
+		if (!f) proxContainer[k+1] = vectors[i];
+				
+	}
+
+	
+	bool *d;
+	d = logAND(vectors[0], vectors[1]);
+
+	for (int k = 0; k < 6; k++){    // показываю результат суммирования
+	
+		cout << " " << d[k];
+	}
+
+
+	cout << "\n" << counter(vectors[1]) << endl;
+
+
+	system("pause");
+	return 0;
+}

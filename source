@@ -2,7 +2,6 @@
 #include<time.h>
 using namespace std;
 
-
 const float ro = 0.9;    // коэффициент vigilance
 
 int counter(bool *a){     // считает сколько единичек в векторе
@@ -50,12 +49,7 @@ int main(){
 	}
 	bool proxContainer[10][6];  // массив прототип векторов
 
-	bool proximity[10] = {};  // Создаю массив, обозначающий к какому кластеру относится данный вектор
-
-	proximity[0] = 1;  // так как первый вектор автоматически становится первым прототип вектором
-
-	
-
+	vectorflag[0] = 1;  // так как первый вектор автоматически становится первым прототип вектором
 
 	rec(proxContainer[0], vectors[0]); // создаем первый прототип вектор из первого вектора
 
@@ -76,41 +70,34 @@ int main(){
 					(((counter(logAND(proxContainer[k], vectors[i]))) / counter(vectors[i])) < ro)
 					)
 					{
-					vectorflag[i] = k + 1;        // обозначаем что данный вектор в данном кластере
+					vectorflag[i] = k ;        // обозначаем что данный вектор в данном кластере
 					logAND(proxContainer[k], vectors[i]); //включить вектор в прототип вектора класса
-
+					f = true;
 					}
 				else {     // если тест на vigilance не пройден 
 					rec(proxContainer[k + 1], vectors[i]);// то прототип вектор нового кластера будет равен данному вектору
 					++nclaster;   //и будет создан новый кластер 
-					break;  // выходим из цикла
+					f = true;
 					}
-			
 				}
-				
-				if (!f) {
-					rec(proxContainer[k + 1], vectors[i]);
-					++nclaster;
-				}
+			if ((!f) & (k = (nclaster-1))){  // когда тест на схожесть не прошел ни 1 кластер
+				rec(proxContainer[k + 1], vectors[i]);
+				vectorflag[i] = k + 1;        // обозначаем что данный вектор в новом кластере
+				++nclaster;					// создается новый кластер
+				}				
+														}
 											}
-		
-								}
-				
-	
-
-	
-	bool *d;
+	/* bool *d;
 	d = logAND(vectors[0], vectors[1]);
 
 	for (int k = 0; k < 6; k++){    // показываю результат логического И
-	
-		cout << " " << d[k];
+		cout << d[k] << " ";
+	}  */
+	cout << endl;
+	for (int i = 0; i < 10; i++){  // Выдаю результат по кластерам
+		cout << vectorflag[i];
+		cout << endl;
 	}
-
-
-	cout << "\n" << counter(vectors[1]) << endl;
-
-
 	system("pause");
 	return 0;
 }
